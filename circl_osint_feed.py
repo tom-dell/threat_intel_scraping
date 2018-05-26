@@ -36,7 +36,7 @@ def cleanMDL():
         t = re.search(r'(?<=\+)[^m](.*)(.json)', line)
         if t is not None:
             a.writelines(t.group(0) + '\n')
-            dl.writelines("wget https://www.circl.lu/doc/misp/feed-osint/" + t.group(0) + " -O /home/circl_osint_feed/" + '\n' + '''curl -X POST "localhost:9200/circl_osint_feed/_doc/" -H 'Content-Type: application.json' --data-binary "@''' + t.group(0) + '''"''' + "\n")
+            dl.writelines("wget https://www.circl.lu/doc/misp/feed-osint/" + t.group(0) + " -P /home/circl_osint_feed/" + '\n' + '''curl -X POST "localhost:9200/circl_osint_feed/_doc/" -H 'Content-Type: application/json' --data-binary "@/home/circl_osint_feed/''' + t.group(0) + '''"''' + "\n")
     mdl.close()
     dl.close()
                 
@@ -50,5 +50,6 @@ os.remove('dump.txt')
 cleanMDL()
 os.remove('messy_download.txt')
 os.remove('daily.txt')
-subprocess.call(['./download.sh'])
+#os.chmod('download.sh', 0o775)
+#subprocess.run('./download.sh')
 #os.remove('download.sh')
