@@ -5,6 +5,10 @@ import os
 import subprocess
 import requests
 
+#--------------------------------------------------------------
+#If you are reading this, i'm sorry for what you are about to see
+#--------------------------------------------------------------
+
 #Put your OTX API key in between the two apostrophe's on line 17
 
 #this function uses OTX's API to download /u/AlienVault's latest posts, and extracts the IDs of /u/ALienVault's pulses in the most convoluted way humanly possible
