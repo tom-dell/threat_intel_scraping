@@ -9,7 +9,7 @@ import requests
 #If you are reading this, i'm sorry for what you are about to see
 #--------------------------------------------------------------
 
-#Put your OTX API key in between the two apostrophe's on line 21
+#Put your OTX API key in between the two apostrophe's on line 17
 
 #this function uses OTX's API to download /u/AlienVault's latest posts, and extracts the IDs of /u/ALienVault's pulses in the most convoluted way humanly possible
 def todays_IDs():
@@ -24,28 +24,40 @@ def todays_IDs():
     page_dump.close()
     
     #uses regex to extract the IDs from page_dump, saved them to messy_todays_IDs, then closes messy_todays_IDs, and page_dump, then deletes the page_dump file
+    page_dump = open('page_dump.txt', 'r')
     for line in page_dump:
         IDs = re.findall(r'(?<="id": ")(.*?)(?=")', line)
         messy_todays_IDs.write(str(IDs))
     page_dump.close()
-    os.remove('page_dump.txt')
     messy_todays_IDs.close()
 
-    #opens the messy_todays_IDs file, and removes the commas, square bracks, quotes, and lines that have less than 5 characters, leaving only the legitimate pulse IDs, 
-    #then writes those pulse IDs to todays_IDs, closes both files, and deletes the messy_todays_IDs file
-    #this finally leaves us with the file we will compare to our master list of already downloaded pulses
+    #opens the messy_todays_IDs file, and removes the commas and replaces them with new lines. Removes the square brackets and apostrophes,
     messy_todays_IDs = open('messy_todays_IDs.txt', 'r')
-    todays_IDs = open('todays_IDs', 'w+')    
+    messy_todays_IDs1 = open('messy_todays_IDs1.txt', 'w+')   
     for line in messy_todays_IDs:
-        todays_IDs.write(line.replace(',', '\n'))
+        messy_todays_IDs1.write(line.replace(',', '\n').replace('[', '').replace(']', '').replace('\'', '').replace(' ', ''))
     messy_todays_IDs.close()
-    os.remove('messy_todays_IDs.txt')
+    messy_todays_IDs1.close()    
+    
+    #this function removes any line that has less than 5 characters
+    messy_todays_IDs1 = open('messy_todays_IDs1.txt', 'r')
+    todays_IDs = open('todays_IDs.txt', 'w+')
+    for line in messy_todays_IDs1:
+        if(len(line) > 5):
+            todays_IDs.write(line)
+    messy_todays_IDs1.close()
     todays_IDs.close()
 
-def compare_the_market():
-    print('here we will compare the master list against todays_IDs')
+    #time to remove the insane amount of files i've created since I can't figure out variables
+    os.remove('page_dump.txt')
+    os.remove('messy_todays_IDs.txt')
+    os.remove('messy_todays_IDs1.txt')
 
+#this function will check the lines in todays_IDs against the master list, any IDs not in mater list will be fed to dl_and_push_to_es 
+#def compare_the_market():
 
+#this function will create a .sh script with curl commands to download the json from OTX, and curl it to elasticsearch
+#def dl_and_push_to_es():
 
 
 todays_IDs()
