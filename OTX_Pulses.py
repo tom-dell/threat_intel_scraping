@@ -54,10 +54,36 @@ def todays_IDs():
     os.remove('messy_todays_IDs1.txt')
 
 #this function will check the lines in todays_IDs against the master list, any IDs not in mater list will be fed to dl_and_push_to_es 
-#def compare_the_market():
+def compare_the_market():
+    filtered_messy_IDs = open('filtered_messy_IDs.txt', 'w+')
+    with open('masterlist.txt', 'r') as masterlist:
+        with open('todays_IDs.txt', 'r') as messy_todays_IDs:
+            difference = difflib.unified_diff(
+                masterlist.readlines(),
+                messy_todays_IDs.readlines(),
+                fromfile='messy_todays_IDs',
+                tofile='masterlist',
+            )
+            for line in difference:
+                filtered_messy_IDs.write(line)
+    filtered_messy_IDs.close()
+    
+#this function cleans the new_IDs file for use in the dl_and_push_to_es function
+def clean_new_IDs():
+    filtered_messy_IDs = open('filtered_messy_IDs.txt', 'r')
+    filtered_todays_IDs = open ('filtered_todays_IDs.txt', 'w+')
+    for line in filtered_messy_IDs:
+        clean_IDs = re.findall(r'(?=\d\w)(.*)', line)
+        if clean_IDs is not None: 
+        #filtered_todays_IDs.write(str(clean_IDs) + '\n')
+            print(clean_IDs)
+    filtered_messy_IDs.close()
+    filtered_todays_IDs.close()
 
 #this function will create a .sh script with curl commands to download the json from OTX, and curl it to elasticsearch
 #def dl_and_push_to_es():
 
 
 todays_IDs()
+compare_the_market()
+clean_new_IDs()
