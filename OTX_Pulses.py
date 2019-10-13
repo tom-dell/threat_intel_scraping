@@ -6,7 +6,7 @@ import subprocess
 import requests
 
 #--------------------------------------------------------------
-#If you are reading this, i'm sorry for what you are about to see
+#If you are reading this, I'm sorry for what you are about to see
 #--------------------------------------------------------------
 
 #Put your OTX API key in between the two apostrophe's on line 17
